@@ -16,21 +16,6 @@
         .main-gradient {
             background: linear-gradient(160deg, #38A3A5, #22577A);
         }
-        .schedule-card {
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
-        }
-        .schedule-card:hover {
-           background-color: #e0e0e0;
-        }
-        .result-section {
-            animation: fadeIn 0.8s ease-in-out;
-            background-color: #F3F4F6; /* Match main bg */
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
         .btn-map {
             transition: all 0.3s ease;
         }
@@ -38,18 +23,23 @@
             transform: scale(1.05);
             box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
         }
-        /* Ensure content is not hidden behind the fixed footer */
         .content-wrapper {
-            padding-bottom: 80px; /* Height of the footer */
+            padding-bottom: 80px;
+        }
+        .loading-dot {
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
         }
     </style>
 </head>
 <body class="bg-gray-200">
 
     <div class="container mx-auto max-w-lg min-h-screen bg-gray-200 md:shadow-lg">
-        
+
         <div id="initial-screen" class="content-wrapper">
-            <!-- App Header -->
             <header class="text-left py-5 px-5 main-gradient text-white">
                 <div class="flex items-center space-x-3">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
@@ -60,118 +50,58 @@
                 <p class="text-sm opacity-90 mt-1 ml-11">AI SCHEDULE</p>
             </header>
 
-            <!-- Calendar -->
             <div class="m-4 bg-white rounded-xl shadow-md">
-                <div class="p-4">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-bold text-gray-800">JANUARY 2025</h2>
+                <div class="p-4 space-y-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800 mb-2">輸入個案與訪視需求</h2>
+                        <p class="text-sm text-gray-600 leading-relaxed">
+                            只要輸入訪視需求與時間限制，AI 便會依據專業排程邏輯與 Azure OpenAI 推理能力自動產生最合適的行程。
+                        </p>
                     </div>
-                    <div class="grid grid-cols-7 gap-2 text-center text-sm">
-                        <div class="font-semibold text-red-500">SUN</div>
-                        <div class="font-semibold text-gray-500">MON</div>
-                        <div class="font-semibold text-gray-500">TUE</div>
-                        <div class="font-semibold text-gray-500">WED</div>
-                        <div class="font-semibold text-gray-500">THU</div>
-                        <div class="font-semibold text-gray-500">FRI</div>
-                        <div class="font-semibold text-gray-500">SAT</div>
-                        
-                        <!-- Dates -->
-                        <div class="text-gray-300 p-1">29</div>
-                        <div class="text-gray-300 p-1">30</div>
-                        <div class="text-gray-300 p-1">31</div>
-                        <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center mx-auto">1</div>
-                        <div class="p-1">2</div>
-                        <div class="p-1">3</div>
-                        <div class="p-1">4</div>
-                        <div class="p-1">5</div>
-                        <div class="p-1">6</div>
-                        <div class="p-1">7</div>
-                        <div class="p-1">8</div>
-                        <div class="p-1">9</div>
-                        <div class="p-1">10</div>
-                        <div class="p-1">11</div>
-                        <div class="p-1">12</div>
-                        <div class="p-1">13</div>
-                        <div class="p-1">14</div>
-                        <div class="p-1">15</div>
-                        <div class="p-1">16</div>
-                        <div class="p-1">17</div>
-                        <div class="p-1">18</div>
-                        <div class="p-1">19</div>
-                        <div class="p-1">20</div>
-                        <div class="p-1">21</div>
-                        <div class="p-1">22</div>
-                        <div class="p-1">23</div>
-                        <div class="p-1">24</div>
-                        <div class="p-1">25</div>
-                        <div class="p-1">26</div>
-                        <div class="p-1">27</div>
-                        <div class="p-1">28</div>
-                        <div class="p-1">29</div>
-                        <div class="p-1">30</div>
-                        <div class="p-1">31</div>
+                    <div>
+                        <label for="case-details" class="block text-sm font-semibold text-gray-700 mb-2">訪視資訊（可自由調整）</label>
+                        <textarea id="case-details" rows="8" class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="請輸入訪視需求、個案優先時段、起訖地點...">日期：2025-01-03
+出發地點：奇美醫院（永康） 早上 09:00 出發
+個案需求：
+1. 黃國榮先生，COPD，早上 09:30 前後即可到訪，地址：台南市北區公園路315號。
+2. 張惠君女士，慢性心衰竭，上午 10:00 後訪視最佳，地址：台南市永康區中正北路88號。
+3. 許淑華女士，需要安排在 11:30-12:30 之間訪視，地址：台南市新營區中正路120號。
+4. 中午預留 60 分鐘彈性用餐與交通緩衝。
+5. 陳玉芬女士，希望安排在 14:00 後訪視，地址：台南市安平區古堡街12巷5號。
+6. 周明宏先生需避開上午洗腎，下午 14:30 後皆可，地址：台南市南區健康路一段150巷6號。
+7. 曾建平先生，高血壓，下午時間皆可，地址：台南市仁德區中山路650號。
+8. 備註：下午 17:00 前需返回奇美醫院（永康）。</textarea>
                     </div>
-                </div>
-            </div>
-
-            <!-- Week Schedule -->
-            <div class="mx-4 mt-6">
-                <h3 class="text-sm font-semibold text-gray-500 mb-2 px-2">WEEK</h3>
-                <div class="bg-white rounded-xl shadow-md p-2 space-y-1">
-                    <div id="schedule-trigger" class="schedule-card bg-gray-100 rounded-lg p-3" onclick="generateSchedule()">
-                         <div class="flex items-center">
-                            <div class="text-center">
-                                <p class="font-bold text-gray-700">0101</p>
-                                <p class="text-xs text-gray-500">三</p>
-                            </div>
-                            <div class="border-l border-gray-300 h-8 mx-3"></div>
-                            <div>
-                                <p class="text-sm text-gray-500">AM <span class="text-gray-800 font-semibold">張惠君, 周明宏, 黃國榮</span></p>
-                                <p class="text-sm text-gray-500">PM <span class="text-gray-800 font-semibold">陳玉芬, 曾建平, 許淑華</span></p>
-                            </div>
+                    <div class="flex items-center justify-between">
+                        <button id="generate-btn" class="inline-flex items-center justify-center bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-blue-700 focus:outline-none" onclick="generateSchedule()">
+                            生成智能排程
+                        </button>
+                        <div id="loading-indicator" class="hidden text-sm text-blue-600">
+                            <span class="loading-dot">●</span>
+                            <span class="loading-dot">●</span>
+                            <span class="loading-dot">●</span>
                         </div>
                     </div>
-                     <!-- Other days as placeholders -->
-                    <div class="bg-gray-100 rounded-lg p-3 opacity-80">
-                         <div class="flex items-center">
-                            <div class="text-center">
-                                <p class="font-bold text-gray-700">0102</p>
-                                <p class="text-xs text-gray-500">四</p>
-                            </div>
-                            <div class="border-l border-gray-300 h-8 mx-3"></div>
-                            <div>
-                                <p class="text-sm text-gray-500">AM <span class="text-gray-800 font-semibold">尚無排程</span></p>
-                                <p class="text-sm text-gray-500">PM <span class="text-gray-800 font-semibold">尚無排程</span></p>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="bg-gray-100 rounded-lg p-3 opacity-80">
-                         <div class="flex items-center">
-                            <div class="text-center">
-                                <p class="font-bold text-gray-700">0103</p>
-                                <p class="text-xs text-gray-500">五</p>
-                            </div>
-                            <div class="border-l border-gray-300 h-8 mx-3"></div>
-                            <div>
-                                <p class="text-sm text-gray-500">AM <span class="text-gray-800 font-semibold">尚無排程</span></p>
-                                <p class="text-sm text-gray-500">PM <span class="text-gray-800 font-semibold">尚無排程</span></p>
-                            </div>
-                        </div>
-                    </div>
+                    <p class="text-xs text-gray-500">
+                        系統會自動調用後端安全代理的 Azure OpenAI 服務，所有金鑰資訊皆以環境變數管理，不會顯示於前端程式碼中。
+                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- Result Screen (Initially Hidden) -->
         <div id="result-screen" style="display: none;" class="result-section p-4 content-wrapper">
-             <div class="flex items-center justify-between mt-4 mb-4">
+            <div class="flex items-center justify-between mt-4 mb-4">
                 <h2 class="text-xl font-bold text-gray-800">AI 智能排程結果</h2>
                 <button onclick="goBack()" class="text-sm text-blue-600 hover:underline">返回</button>
             </div>
-            
-            <!-- 1. Visit Schedule -->
+
+            <div id="error-banner" class="hidden mb-4 border border-red-200 bg-red-50 text-red-700 text-sm rounded-lg p-3"></div>
+
             <div class="bg-white rounded-lg shadow-lg p-4 mb-6">
-                <h3 class="text-lg font-bold text-blue-700 mb-4 border-b pb-2">📅 訪視時間表</h3>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-blue-700">📅 訪視時間表</h3>
+                    <span id="schedule-date" class="text-sm text-gray-500"></span>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left text-gray-600">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 rounded-t-lg">
@@ -183,96 +113,29 @@
                                 <th scope="col" class="px-3 py-3">時間</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="bg-white border-b">
-                                <td class="px-3 py-4 font-medium">0</td>
-                                <td class="px-3 py-4">出發點</td>
-                                <td class="px-3 py-4 font-semibold">奇美醫院 (永康)</td>
-                                <td class="px-3 py-4">台南市永康區中華路901號</td>
-                                <td class="px-3 py-4">出發: 09:00</td>
-                            </tr>
-                            <tr class="bg-blue-50 border-b">
-                                <td class="px-3 py-4 font-medium">1</td>
-                                <td class="px-3 py-4">病人</td>
-                                <td class="px-3 py-4 font-semibold">黃國榮 <span class="text-xs">(COPD)</span></td>
-                                <td class="px-3 py-4">台南市北區公園路315號</td>
-                                <td class="px-3 py-4">抵達: 09:20<br>訪視: 25分<br>離開: 09:45</td>
-                            </tr>
-                            <tr class="bg-white border-b">
-                                <td class="px-3 py-4 font-medium">2</td>
-                                <td class="px-3 py-4">病人</td>
-                                <td class="px-3 py-4 font-semibold">張惠君 <span class="text-xs">(慢性心衰竭)</span></td>
-                                <td class="px-3 py-4">台南市永康區中正北路88號</td>
-                                <td class="px-3 py-4">抵達: 10:05<br>訪視: 25分<br>離開: 10:30</td>
-                            </tr>
-                             <tr class="bg-yellow-50 border-b">
-                                <td class="px-3 py-4 font-medium">3</td>
-                                <td class="px-3 py-4">病人</td>
-                                <td class="px-3 py-4 font-semibold">許淑華 <span class="text-xs text-red-600 font-bold">(中午訪視)</span></td>
-                                <td class="px-3 py-4">台南市新營區中正路120號</td>
-                                <td class="px-3 py-4">抵達: 11:20<br>訪視: 20分<br>離開: 11:40</td>
-                            </tr>
-                            <tr class="bg-green-50 border-b">
-                                <td class="px-3 py-4">-</td>
-                                <td class="px-3 py-4">用餐</td>
-                                <td class="px-3 py-4 font-semibold">午餐休息</td>
-                                <td class="px-3 py-4">(彈性安排)</td>
-                                <td class="px-3 py-4">12:00-13:00 (60分)</td>
-                            </tr>
-                             <tr class="bg-yellow-50 border-b">
-                                <td class="px-3 py-4 font-medium">4</td>
-                                <td class="px-3 py-4">病人</td>
-                                <td class="px-3 py-4 font-semibold">陳玉芬 <span class="text-xs text-red-600 font-bold">(下午訪視)</span></td>
-                                <td class="px-3 py-4">台南市安平區古堡街12巷5號</td>
-                                <td class="px-3 py-4">抵達: 13:40<br>訪視: 30分<br>離開: 14:10</td>
-                            </tr>
-                             <tr class="bg-blue-50 border-b">
-                                <td class="px-3 py-4 font-medium">5</td>
-                                <td class="px-3 py-4">病人</td>
-                                <td class="px-3 py-4 font-semibold">周明宏 <span class="text-xs">(避開上午洗腎)</span></td>
-                                <td class="px-3 py-4">台南市南區健康路一段150巷6號</td>
-                                <td class="px-3 py-4">抵達: 14:30<br>訪視: 25分<br>離開: 14:55</td>
-                            </tr>
-                            <tr class="bg-white border-b">
-                                <td class="px-3 py-4 font-medium">6</td>
-                                <td class="px-3 py-4">病人</td>
-                                <td class="px-3 py-4 font-semibold">曾建平 <span class="text-xs">(高血壓)</span></td>
-                                <td class="px-3 py-4">台南市仁德區中山路650號</td>
-                                <td class="px-3 py-4">抵達: 15:15<br>訪視: 40分<br>離開: 15:55</td>
-                            </tr>
-                            <tr class="bg-gray-100">
-                                <td class="px-3 py-4 font-medium">7</td>
-                                <td class="px-3 py-4">終點</td>
-                                <td class="px-3 py-4 font-semibold">奇美醫院 (永康)</td>
-                                <td class="px-3 py-4">台南市永康區中華路901號</td>
-                                <td class="px-3 py-4">抵達: 16:15</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="schedule-table-body"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- 2. Visit Route -->
-            <div class="bg-white rounded-lg shadow-lg p-4 mb-6 text-center">
+            <div id="route-map-section" class="bg-white rounded-lg shadow-lg p-4 mb-6 text-center hidden">
                 <h3 class="text-lg font-bold text-blue-700 mb-4">🗺️ 訪視路線排程結果</h3>
-                <a href="https://www.google.com/maps/dir/奇美醫院/台南市北區公園路315號/台南市永康區中正北路88號/台南市新營區中正路120號/台南市安平區古堡街12巷5號/台南市南區健康路一段150巷6號/台南市仁德區中山路650號/奇美醫院" target="_blank" class="inline-block btn-map bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700">
+                <a id="route-map-link" href="#" target="_blank" class="inline-block btn-map bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700">
                     點擊開啟排程路線地圖
                 </a>
             </div>
 
-            <!-- 3. Reminders -->
-            <div class="bg-white rounded-lg shadow-lg p-4">
-                 <h3 class="text-lg font-bold text-blue-700 mb-3">💡 排程考量與貼心提醒</h3>
-                <ul class="list-disc list-inside text-gray-700 space-y-2">
-                    <li>本排程已優先滿足 <strong class="text-red-600">許淑華女士(中午)</strong> 與 <strong class="text-red-600">陳玉芬女士(下午)</strong> 的特殊時段需求。</li>
-                    <li>考量交通時間，將鄰近市區的病患集中於上午及下午時段，並將路途較遠的新營區安排在上午時段前往，以達最佳路線效率。</li>
-                    <li>已將周明宏先生的訪視排於下午，避開其上午可能的洗腎時段。</li>
-                    <li>中午已保留彈性用餐休息時間，您可以根據實際情況調整。</li>
-                </ul>
+            <div id="reminder-section" class="bg-white rounded-lg shadow-lg p-4 hidden">
+                <h3 class="text-lg font-bold text-blue-700 mb-3">💡 排程考量與貼心提醒</h3>
+                <ul id="reminder-list" class="list-disc list-inside text-gray-700 space-y-2"></ul>
+            </div>
+
+            <div id="raw-response-container" class="bg-white rounded-lg shadow-inner p-4 mt-6 hidden">
+                <h3 class="text-sm font-semibold text-gray-700 mb-2">原始 AI 回應</h3>
+                <pre id="raw-response" class="text-xs text-gray-600 whitespace-pre-wrap"></pre>
             </div>
         </div>
-        
-        <!-- Bottom Navigation -->
+
         <footer class="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white shadow-t rounded-t-2xl border-t">
             <div class="flex justify-around items-center h-16">
                 <a href="#" class="text-center text-gray-500 hover:text-blue-500">
@@ -305,25 +168,184 @@
     </div>
 
     <script>
-        // DOM elements
         const initialScreen = document.getElementById('initial-screen');
         const resultScreen = document.getElementById('result-screen');
+        const generateBtn = document.getElementById('generate-btn');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const scheduleDate = document.getElementById('schedule-date');
+        const scheduleTableBody = document.getElementById('schedule-table-body');
+        const routeMapSection = document.getElementById('route-map-section');
+        const routeMapLink = document.getElementById('route-map-link');
+        const reminderSection = document.getElementById('reminder-section');
+        const reminderList = document.getElementById('reminder-list');
+        const rawResponseContainer = document.getElementById('raw-response-container');
+        const rawResponseElement = document.getElementById('raw-response');
+        const errorBanner = document.getElementById('error-banner');
 
-        // Function to show the generated schedule
-        function generateSchedule() {
-            // Hide the initial screen and show the results
-            initialScreen.style.display = 'none';
-            resultScreen.style.display = 'block';
-            window.scrollTo(0, 0); // Scroll to top
+        function toggleLoading(isLoading) {
+            if (isLoading) {
+                loadingIndicator.classList.remove('hidden');
+                generateBtn.setAttribute('disabled', 'disabled');
+                generateBtn.classList.add('opacity-70', 'cursor-not-allowed');
+            } else {
+                loadingIndicator.classList.add('hidden');
+                generateBtn.removeAttribute('disabled');
+                generateBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+            }
         }
 
-        // Function to go back to the initial screen
+        function showError(message) {
+            errorBanner.textContent = message;
+            errorBanner.classList.remove('hidden');
+        }
+
+        function clearError() {
+            errorBanner.classList.add('hidden');
+            errorBanner.textContent = '';
+        }
+
+        function formatTime(timeObject = {}) {
+            const parts = [];
+            if (timeObject.depart) parts.push(`出發: ${timeObject.depart}`);
+            if (timeObject.arrive) parts.push(`抵達: ${timeObject.arrive}`);
+            if (typeof timeObject.visit_minutes !== 'undefined') parts.push(`訪視: ${timeObject.visit_minutes} 分`);
+            if (timeObject.leave) parts.push(`離開: ${timeObject.leave}`);
+            if (timeObject.buffer_minutes) parts.push(`緩衝: ${timeObject.buffer_minutes} 分`);
+            if (timeObject.meal) parts.push(`用餐: ${timeObject.meal}`);
+            return parts.join('\n');
+        }
+
+        function createTableRow(stop) {
+            const tr = document.createElement('tr');
+            tr.className = 'border-b last:border-b-0';
+
+            const orderTd = document.createElement('td');
+            orderTd.className = 'px-3 py-4 font-medium text-gray-700';
+            orderTd.textContent = typeof stop.order !== 'undefined' ? stop.order : '-';
+
+            const typeTd = document.createElement('td');
+            typeTd.className = 'px-3 py-4 text-gray-600';
+            typeTd.textContent = stop.type || '';
+
+            const nameTd = document.createElement('td');
+            nameTd.className = 'px-3 py-4 text-gray-700 font-semibold';
+            nameTd.innerHTML = stop.name ? stop.name : '';
+            if (stop.note) {
+                const noteSpan = document.createElement('span');
+                noteSpan.className = 'block text-xs text-blue-500 mt-1';
+                noteSpan.textContent = stop.note;
+                nameTd.appendChild(noteSpan);
+            }
+
+            const addressTd = document.createElement('td');
+            addressTd.className = 'px-3 py-4 text-gray-600';
+            addressTd.textContent = stop.address || '';
+
+            const timeTd = document.createElement('td');
+            timeTd.className = 'px-3 py-4 text-gray-600 whitespace-pre-line';
+            timeTd.textContent = formatTime(stop.time);
+
+            tr.append(orderTd, typeTd, nameTd, addressTd, timeTd);
+            return tr;
+        }
+
+        function renderSchedule(schedule) {
+            scheduleTableBody.innerHTML = '';
+            scheduleDate.textContent = schedule.date || '';
+
+            if (Array.isArray(schedule.stops)) {
+                schedule.stops.forEach((stop) => {
+                    scheduleTableBody.appendChild(createTableRow(stop));
+                });
+            }
+
+            if (schedule.route_map_url) {
+                routeMapLink.href = schedule.route_map_url;
+                routeMapSection.classList.remove('hidden');
+            } else {
+                routeMapLink.removeAttribute('href');
+                routeMapSection.classList.add('hidden');
+            }
+
+            if (Array.isArray(schedule.reminders) && schedule.reminders.length > 0) {
+                reminderList.innerHTML = '';
+                schedule.reminders.forEach((item) => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    reminderList.appendChild(li);
+                });
+                reminderSection.classList.remove('hidden');
+            } else {
+                reminderSection.classList.add('hidden');
+            }
+        }
+
+        function showRawResponse(rawText) {
+            if (rawText) {
+                rawResponseElement.textContent = rawText;
+                rawResponseContainer.classList.remove('hidden');
+            } else {
+                rawResponseElement.textContent = '';
+                rawResponseContainer.classList.add('hidden');
+            }
+        }
+
+        async function generateSchedule() {
+            const caseDetails = document.getElementById('case-details').value.trim();
+            if (!caseDetails) {
+                alert('請先輸入訪視需求或個案資訊。');
+                return;
+            }
+
+            toggleLoading(true);
+            clearError();
+
+            try {
+                const response = await fetch('/api/schedule', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ caseDetails }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('AI 排程服務呼叫失敗，請稍後再試。');
+                }
+
+                const data = await response.json();
+                initialScreen.style.display = 'none';
+                resultScreen.style.display = 'block';
+                window.scrollTo(0, 0);
+
+                if (data.schedule) {
+                    renderSchedule(data.schedule);
+                }
+
+                if (data.error) {
+                    showError(data.error);
+                }
+
+                showRawResponse(data.rawResponse);
+
+                if (!data.schedule && !data.error) {
+                    showError('無法解析 AI 回應，已顯示原始內容供參考。');
+                }
+            } catch (error) {
+                showError(error.message);
+                initialScreen.style.display = 'none';
+                resultScreen.style.display = 'block';
+                showRawResponse('');
+            } finally {
+                toggleLoading(false);
+            }
+        }
+
         function goBack() {
             resultScreen.style.display = 'none';
             initialScreen.style.display = 'block';
+            showRawResponse('');
+            clearError();
         }
     </script>
 
 </body>
 </html>
-
