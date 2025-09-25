@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>居家護理訪視路線智能排程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .main-gradient {
+            background: linear-gradient(160deg, #38A3A5, #22577A);
+        }
+        .schedule-card {
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .schedule-card:hover {
+           background-color: #e0e0e0;
+        }
+        .result-section {
+            animation: fadeIn 0.8s ease-in-out;
+            background-color: #F3F4F6; /* Match main bg */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .btn-map {
+            transition: all 0.3s ease;
+        }
+        .btn-map:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        /* Ensure content is not hidden behind the fixed footer */
+        .content-wrapper {
+            padding-bottom: 80px; /* Height of the footer */
+        }
+    </style>
+</head>
+<body class="bg-gray-200">
+
+    <div class="container mx-auto max-w-lg min-h-screen bg-gray-200 md:shadow-lg">
+        
+        <div id="initial-screen" class="content-wrapper">
+            <!-- App Header -->
+            <header class="text-left py-5 px-5 main-gradient text-white">
+                <div class="flex items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 5a1 1 0 100 2h1a1 1 0 100-2H7zM3 8a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm1 3a1 1 0 100 2h1a1 1 0 100-2H4zm3 0a1 1 0 100 2h1a1 1 0 100-2H7zm3 0a1 1 0 100 2h1a1 1 0 100-2h-1zm3 0a1 1 0 100 2h1a1 1 0 100-2h-1z" clip-rule="evenodd" />
+                    </svg>
+                    <h1 class="text-xl font-bold tracking-wider">TaiOne Care GPT</h1>
+                </div>
+                <p class="text-sm opacity-90 mt-1 ml-11">AI SCHEDULE</p>
+            </header>
+
+            <!-- Calendar -->
+            <div class="m-4 bg-white rounded-xl shadow-md">
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-bold text-gray-800">JANUARY 2025</h2>
+                    </div>
+                    <div class="grid grid-cols-7 gap-2 text-center text-sm">
+                        <div class="font-semibold text-red-500">SUN</div>
+                        <div class="font-semibold text-gray-500">MON</div>
+                        <div class="font-semibold text-gray-500">TUE</div>
+                        <div class="font-semibold text-gray-500">WED</div>
+                        <div class="font-semibold text-gray-500">THU</div>
+                        <div class="font-semibold text-gray-500">FRI</div>
+                        <div class="font-semibold text-gray-500">SAT</div>
+                        
+                        <!-- Dates -->
+                        <div class="text-gray-300 p-1">29</div>
+                        <div class="text-gray-300 p-1">30</div>
+                        <div class="text-gray-300 p-1">31</div>
+                        <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center mx-auto">1</div>
+                        <div class="p-1">2</div>
+                        <div class="p-1">3</div>
+                        <div class="p-1">4</div>
+                        <div class="p-1">5</div>
+                        <div class="p-1">6</div>
+                        <div class="p-1">7</div>
+                        <div class="p-1">8</div>
+                        <div class="p-1">9</div>
+                        <div class="p-1">10</div>
+                        <div class="p-1">11</div>
+                        <div class="p-1">12</div>
+                        <div class="p-1">13</div>
+                        <div class="p-1">14</div>
+                        <div class="p-1">15</div>
+                        <div class="p-1">16</div>
+                        <div class="p-1">17</div>
+                        <div class="p-1">18</div>
+                        <div class="p-1">19</div>
+                        <div class="p-1">20</div>
+                        <div class="p-1">21</div>
+                        <div class="p-1">22</div>
+                        <div class="p-1">23</div>
+                        <div class="p-1">24</div>
+                        <div class="p-1">25</div>
+                        <div class="p-1">26</div>
+                        <div class="p-1">27</div>
+                        <div class="p-1">28</div>
+                        <div class="p-1">29</div>
+                        <div class="p-1">30</div>
+                        <div class="p-1">31</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Week Schedule -->
+            <div class="mx-4 mt-6">
+                <h3 class="text-sm font-semibold text-gray-500 mb-2 px-2">WEEK</h3>
+                <div class="bg-white rounded-xl shadow-md p-2 space-y-1">
+                    <div id="schedule-trigger" class="schedule-card bg-gray-100 rounded-lg p-3" onclick="generateSchedule()">
+                         <div class="flex items-center">
+                            <div class="text-center">
+                                <p class="font-bold text-gray-700">0101</p>
+                                <p class="text-xs text-gray-500">三</p>
+                            </div>
+                            <div class="border-l border-gray-300 h-8 mx-3"></div>
+                            <div>
+                                <p class="text-sm text-gray-500">AM <span class="text-gray-800 font-semibold">張惠君, 周明宏, 黃國榮</span></p>
+                                <p class="text-sm text-gray-500">PM <span class="text-gray-800 font-semibold">陳玉芬, 曾建平, 許淑華</span></p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Other days as placeholders -->
+                    <div class="bg-gray-100 rounded-lg p-3 opacity-80">
+                         <div class="flex items-center">
+                            <div class="text-center">
+                                <p class="font-bold text-gray-700">0102</p>
+                                <p class="text-xs text-gray-500">四</p>
+                            </div>
+                            <div class="border-l border-gray-300 h-8 mx-3"></div>
+                            <div>
+                                <p class="text-sm text-gray-500">AM <span class="text-gray-800 font-semibold">尚無排程</span></p>
+                                <p class="text-sm text-gray-500">PM <span class="text-gray-800 font-semibold">尚無排程</span></p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="bg-gray-100 rounded-lg p-3 opacity-80">
+                         <div class="flex items-center">
+                            <div class="text-center">
+                                <p class="font-bold text-gray-700">0103</p>
+                                <p class="text-xs text-gray-500">五</p>
+                            </div>
+                            <div class="border-l border-gray-300 h-8 mx-3"></div>
+                            <div>
+                                <p class="text-sm text-gray-500">AM <span class="text-gray-800 font-semibold">尚無排程</span></p>
+                                <p class="text-sm text-gray-500">PM <span class="text-gray-800 font-semibold">尚無排程</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen (Initially Hidden) -->
+        <div id="result-screen" style="display: none;" class="result-section p-4 content-wrapper">
+             <div class="flex items-center justify-between mt-4 mb-4">
+                <h2 class="text-xl font-bold text-gray-800">AI 智能排程結果</h2>
+                <button onclick="goBack()" class="text-sm text-blue-600 hover:underline">返回</button>
+            </div>
+            
+            <!-- 1. Visit Schedule -->
+            <div class="bg-white rounded-lg shadow-lg p-4 mb-6">
+                <h3 class="text-lg font-bold text-blue-700 mb-4 border-b pb-2">📅 訪視時間表</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-600">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 rounded-t-lg">
+                            <tr>
+                                <th scope="col" class="px-3 py-3">順序</th>
+                                <th scope="col" class="px-3 py-3">地點類別</th>
+                                <th scope="col" class="px-3 py-3">名稱/病人姓名</th>
+                                <th scope="col" class="px-3 py-3">地址</th>
+                                <th scope="col" class="px-3 py-3">時間</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b">
+                                <td class="px-3 py-4 font-medium">0</td>
+                                <td class="px-3 py-4">出發點</td>
+                                <td class="px-3 py-4 font-semibold">奇美醫院 (永康)</td>
+                                <td class="px-3 py-4">台南市永康區中華路901號</td>
+                                <td class="px-3 py-4">出發: 09:00</td>
+                            </tr>
+                            <tr class="bg-blue-50 border-b">
+                                <td class="px-3 py-4 font-medium">1</td>
+                                <td class="px-3 py-4">病人</td>
+                                <td class="px-3 py-4 font-semibold">黃國榮 <span class="text-xs">(COPD)</span></td>
+                                <td class="px-3 py-4">台南市北區公園路315號</td>
+                                <td class="px-3 py-4">抵達: 09:20<br>訪視: 25分<br>離開: 09:45</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                                <td class="px-3 py-4 font-medium">2</td>
+                                <td class="px-3 py-4">病人</td>
+                                <td class="px-3 py-4 font-semibold">張惠君 <span class="text-xs">(慢性心衰竭)</span></td>
+                                <td class="px-3 py-4">台南市永康區中正北路88號</td>
+                                <td class="px-3 py-4">抵達: 10:05<br>訪視: 25分<br>離開: 10:30</td>
+                            </tr>
+                             <tr class="bg-yellow-50 border-b">
+                                <td class="px-3 py-4 font-medium">3</td>
+                                <td class="px-3 py-4">病人</td>
+                                <td class="px-3 py-4 font-semibold">許淑華 <span class="text-xs text-red-600 font-bold">(中午訪視)</span></td>
+                                <td class="px-3 py-4">台南市新營區中正路120號</td>
+                                <td class="px-3 py-4">抵達: 11:20<br>訪視: 20分<br>離開: 11:40</td>
+                            </tr>
+                            <tr class="bg-green-50 border-b">
+                                <td class="px-3 py-4">-</td>
+                                <td class="px-3 py-4">用餐</td>
+                                <td class="px-3 py-4 font-semibold">午餐休息</td>
+                                <td class="px-3 py-4">(彈性安排)</td>
+                                <td class="px-3 py-4">12:00-13:00 (60分)</td>
+                            </tr>
+                             <tr class="bg-yellow-50 border-b">
+                                <td class="px-3 py-4 font-medium">4</td>
+                                <td class="px-3 py-4">病人</td>
+                                <td class="px-3 py-4 font-semibold">陳玉芬 <span class="text-xs text-red-600 font-bold">(下午訪視)</span></td>
+                                <td class="px-3 py-4">台南市安平區古堡街12巷5號</td>
+                                <td class="px-3 py-4">抵達: 13:40<br>訪視: 30分<br>離開: 14:10</td>
+                            </tr>
+                             <tr class="bg-blue-50 border-b">
+                                <td class="px-3 py-4 font-medium">5</td>
+                                <td class="px-3 py-4">病人</td>
+                                <td class="px-3 py-4 font-semibold">周明宏 <span class="text-xs">(避開上午洗腎)</span></td>
+                                <td class="px-3 py-4">台南市南區健康路一段150巷6號</td>
+                                <td class="px-3 py-4">抵達: 14:30<br>訪視: 25分<br>離開: 14:55</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                                <td class="px-3 py-4 font-medium">6</td>
+                                <td class="px-3 py-4">病人</td>
+                                <td class="px-3 py-4 font-semibold">曾建平 <span class="text-xs">(高血壓)</span></td>
+                                <td class="px-3 py-4">台南市仁德區中山路650號</td>
+                                <td class="px-3 py-4">抵達: 15:15<br>訪視: 40分<br>離開: 15:55</td>
+                            </tr>
+                            <tr class="bg-gray-100">
+                                <td class="px-3 py-4 font-medium">7</td>
+                                <td class="px-3 py-4">終點</td>
+                                <td class="px-3 py-4 font-semibold">奇美醫院 (永康)</td>
+                                <td class="px-3 py-4">台南市永康區中華路901號</td>
+                                <td class="px-3 py-4">抵達: 16:15</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 2. Visit Route -->
+            <div class="bg-white rounded-lg shadow-lg p-4 mb-6 text-center">
+                <h3 class="text-lg font-bold text-blue-700 mb-4">🗺️ 訪視路線排程結果</h3>
+                <a href="https://www.google.com/maps/dir/奇美醫院/台南市北區公園路315號/台南市永康區中正北路88號/台南市新營區中正路120號/台南市安平區古堡街12巷5號/台南市南區健康路一段150巷6號/台南市仁德區中山路650號/奇美醫院" target="_blank" class="inline-block btn-map bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700">
+                    點擊開啟排程路線地圖
+                </a>
+            </div>
+
+            <!-- 3. Reminders -->
+            <div class="bg-white rounded-lg shadow-lg p-4">
+                 <h3 class="text-lg font-bold text-blue-700 mb-3">💡 排程考量與貼心提醒</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li>本排程已優先滿足 <strong class="text-red-600">許淑華女士(中午)</strong> 與 <strong class="text-red-600">陳玉芬女士(下午)</strong> 的特殊時段需求。</li>
+                    <li>考量交通時間，將鄰近市區的病患集中於上午及下午時段，並將路途較遠的新營區安排在上午時段前往，以達最佳路線效率。</li>
+                    <li>已將周明宏先生的訪視排於下午，避開其上午可能的洗腎時段。</li>
+                    <li>中午已保留彈性用餐休息時間，您可以根據實際情況調整。</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <footer class="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white shadow-t rounded-t-2xl border-t">
+            <div class="flex justify-around items-center h-16">
+                <a href="#" class="text-center text-gray-500 hover:text-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                    <span class="text-xs">LINK</span>
+                </a>
+                <a href="#" class="text-center text-blue-500 font-bold">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+                    </svg>
+                    <span class="text-xs">AI HELPER</span>
+                </a>
+                <a href="#" class="text-center text-gray-500 hover:text-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <span class="text-xs">REMIND</span>
+                </a>
+                <a href="#" class="text-center text-gray-500 hover:text-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span class="text-xs">AI CAM</span>
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // DOM elements
+        const initialScreen = document.getElementById('initial-screen');
+        const resultScreen = document.getElementById('result-screen');
+
+        // Function to show the generated schedule
+        function generateSchedule() {
+            // Hide the initial screen and show the results
+            initialScreen.style.display = 'none';
+            resultScreen.style.display = 'block';
+            window.scrollTo(0, 0); // Scroll to top
+        }
+
+        // Function to go back to the initial screen
+        function goBack() {
+            resultScreen.style.display = 'none';
+            initialScreen.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
+
